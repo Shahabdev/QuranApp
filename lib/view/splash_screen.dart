@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:quranproject/modals/SurahNameModal.dart';
 import 'package:quranproject/utils/routes/routes_name.dart';
 import 'package:http/http.dart' as http;
+import 'package:quranproject/view_model/JuzViewModal.dart';
 import '../data/network/networkApiServises.dart';
 import '../reprository/Surah_repository.dart';
 import '../view_model/surahName_viewModel.dart';
@@ -22,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
  // SurahRepository surahrepository=SurahRepository();
   SurahNameViewModal names = SurahNameViewModal();
+  final JuzViewModal juzViewModal=JuzViewModal();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,9 +71,11 @@ class _SplashScreenState extends State<SplashScreen> {
                      // detailsModel2('http://api.alquran.cloud/v1/surah');
 
                      // surahrepository.surahName();
-
+        juzViewModal.loadAllJuz();
                       Navigator.pushNamed(context,RoutesName.homeScreen);
                       names.surahnamelist;
+
+
 
                     },
                     child: Container(

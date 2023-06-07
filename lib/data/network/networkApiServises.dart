@@ -15,9 +15,7 @@ class NetworkApiServices extends BaseApiServices
       try
           {
             final response=await http.get(Uri.parse(url));
-            print('awais${response.body.toString()}');
 
-            //var data = jsonDecode(response.body.toString());
             responseJson=returnResponse(response);
           } on SocketException
      {

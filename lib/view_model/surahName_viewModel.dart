@@ -20,7 +20,7 @@ ApiResponse<SurahNameModal> surahnamelist=ApiResponse.loading();
 setSurahName(ApiResponse<SurahNameModal> response)
 {
   surahnamelist=response;
-  ChangeNotifier();
+  notifyListeners();
 }
 
   Future<void> getSurahInfo() async

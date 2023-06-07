@@ -10,10 +10,9 @@ class SurahRepository {
   BaseApiServices _apiServices = NetworkApiServices();
   Future<SurahNameModal> surahName() async {
     try {
-      dynamic response = await _apiServices.getApiResponse(AppUrl.baserl);
+      dynamic response = await _apiServices.getApiResponse(AppUrl.surahendpoint);
 
       print('shahab${response}');
-      //var data = jsonDecode(response.body.toString());
 
 
       return response= SurahNameModal.fromJson(response);

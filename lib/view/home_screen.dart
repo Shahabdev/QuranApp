@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quranproject/modals/JuzModal.dart';
 import 'package:quranproject/reprository/Surah_repository.dart';
+import 'package:quranproject/utils/para_widget.dart';
+import 'package:quranproject/view_model/JuzViewModal.dart';
 import 'package:quranproject/view_model/surahName_viewModel.dart';
 
 import '../data/response/status.dart';
@@ -15,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   SurahNameViewModal names = SurahNameViewModal();
+  JuzViewModal juzInfo=JuzViewModal();
 
   int _bindex = 0;
   @override
@@ -33,26 +37,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {}); // Update the state after fetching the data
   }
 
+  
   @override
   Widget build(BuildContext context) {
+    final JuzViewModal juzViewModal=Provider.of<JuzViewModal>(context);
+
     TabController _tabController = TabController(length: 4, vsync: this);
 
     return Scaffold(
       backgroundColor: Color(0xffDAD8E8),
       body: ChangeNotifierProvider<SurahNameViewModal>(
         create: (BuildContext context) => names,
-        child: Consumer<SurahNameViewModal>(
-            builder: (context, value, _) {
-             // print(value.surahnamelist.data.data![1].englishName.toString());
-          switch (value.surahnamelist.status) {
-            case Status.Loading:
-              return Center(
-                  child: CircularProgressIndicator());
-            case Status.Error:
-              return Center(
-                  child: Text(value.surahnamelist.message.toString()));
-            case Status.Completed:
-              return SingleChildScrollView(
+        child: 
+  
+          SingleChildScrollView(
                 child: Column(
                   // mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               child: Image.asset(
                                 "assets/menu.png",
                                 scale: 3.0,
-                              )),
+                              ),),
                           const SizedBox(
                             width: 18,
                           ),
@@ -124,50 +122,72 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             child: Image.asset("assets/Frame 30.png")),
                         Padding(
                           padding: const EdgeInsets.only(left: 25),
-                          child: Column(
-                            //mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Consumer<SurahNameViewModal>(
+                            builder: (context,value,_) {
+                              return Column(
+                                //mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  RotationTransition(
-                                      turns: AlwaysStoppedAnimation(19 / 360),
-                                      child: Image.asset(
-                                        "assets/cib.png",
-                                        scale: 2.0,
-                                      )),
-                                  const Text(
-                                    "Last Read",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18),
-                                  )
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      RotationTransition(
+                                          turns: AlwaysStoppedAnimation(19 / 360),
+                                          child: Image.asset(
+                                            "assets/cib.png",
+                                            scale: 2.0,
+                                          )),
+                                      const Text(
+                                        "Last Read",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18),
+                                      )
+                                    ],
+                                  ),
+
+                                  // STATIC TEXT
+                                 InkWell(
+
+                                   onTap: (){
+                                     setState(() {
+                                       _bindex++;
+                                     });
+
+
+                                   },
+                                   child: Container(
+                                     child: Column
+                                       (
+                                       children: [
+                                         Text(
+                                           names.surahnamelist.data.data![_bindex].name
+                                               .toString(),
+                                           style: const TextStyle(
+                                               color: Colors.white,
+                                               fontWeight: FontWeight.w400,
+                                               fontSize: 33),
+                                         ),
+                                         Text(
+                                           "Ayats: ${names.surahnamelist.data.data![_bindex].numberOfAyahs.toString()}",
+                                           style: TextStyle(
+                                               color: Colors.white,
+                                               fontWeight: FontWeight.w300,
+                                               fontSize: 18),
+                                         ),
+                                       ],
+                                     ),
+                                   ),
+                                 )
+
+
+                                  // STATIC TEXT
+
                                 ],
-                              ),
-
-                              // STATIC TEXT
-
-                              Text(
-                                names.surahnamelist.data.data![0].name
-                                    .toString(),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 33),
-                              ),
-
-                              // STATIC TEXT
-                              const Text(
-                                "Ayah No : 1",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 18),
-                              ),
-                            ],
+                              );
+                            }
                           ),
                         )
                       ],
@@ -218,78 +238,98 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: TabBarView(
                         controller: _tabController,
                         children: [
-                          ListView.separated(
-                            shrinkWrap: true,
-                            itemCount: 4,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                leading: Image.asset(
-                                  "assets/counting.png",
-                                  scale: 1.0,
-                                ),
-                                title: Text(
-                                  " Al-Fatih",
-                                  style: TextStyle(
-                                      color: Color(0xff240F4F), fontSize: 20),
-                                ),
-                                subtitle: Text(
-                                  " MECCAN \t \tألْفَاتِحَة 7 VERSES",
-                                  style: TextStyle(
-                                      color: Color(0xff8789A3), fontSize: 12),
-                                ),
-                                trailing: Text(
-                                  " ألْفَاتِحَة",
-                                  style: TextStyle(
-                                      color: Color(0xff863ED5), fontSize: 20),
-                                ),
+                          Consumer<SurahNameViewModal>(
+                            builder: (context,value,_) {
+                              return ListView.separated(
+                                shrinkWrap: true,
+                                itemCount: value.surahnamelist.data.data!.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    leading: Stack(
+                                      children:[ Image.asset(
+                                        "assets/counting.png",
+                                        scale: 1.0,
+                                      ),
+                                        Positioned(
+                                            top: 22,
+                                            left: 21,
+                                            child: Text(names.surahnamelist.data.data![index].number.toString(),style: TextStyle(color: Color(0xff240F4F),fontWeight: FontWeight.bold),),)
+                                    ]
+                                    ),
+                                    title: Text(
+                                      names.surahnamelist.data.data![index].englishName.toString(),
+                                      style:const  TextStyle(
+                                          color: Color(0xff240F4F), fontSize: 20),
+                                    ),
+                                    subtitle: Text(
+                                      " ${names.surahnamelist.data.data![index].revelationType.toString()} \t \t ${names.surahnamelist.data.data![index].numberOfAyahs.toString()} VERSES",
+                                      style: const TextStyle(
+                                          color: Color(0xff8789A3), fontSize: 16,fontWeight: FontWeight.bold),
+                                    ),
+                                    trailing: Text(
+                                      names.surahnamelist.data.data![index].name
+                                          .toString(),
+                                      style: TextStyle(
+                                          color: Color(0xff863ED5), fontSize: 20),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const Divider(
+                                    thickness: 1,
+                                    indent: 10,
+                                    endIndent: 10,
+                                    color: Colors.teal,
+                                  );
+                                },
                               );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const Divider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                                color: Colors.teal,
-                              );
-                            },
+                            }
                           ),
-                          ListView.separated(
-                            shrinkWrap: true,
-                            itemCount: value.surahnamelist.data.data!.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                leading: Image.asset(
-                                  "assets/counting.png",
-                                ),
-                                title: Text(
-                                  value.surahnamelist.data.data![index].name
-                                      .toString(),
-                                  style: TextStyle(
-                                      color: Color(0xff240F4F), fontSize: 20),
-                                ),
-                                subtitle: Text(
-                                  " MECCAN \t \tألْفَاتِحَة 7 VERSES",
-                                  style: TextStyle(
-                                      color: Color(0xff8789A3), fontSize: 12),
-                                ),
-                                trailing: Text(
-                                  " ألْفَاتِحَة",
-                                  style: TextStyle(
-                                      color: Color(0xff863ED5), fontSize: 20),
-                                ),
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const Divider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                                color: Colors.teal,
-                              );
-                            },
-                          ),
+                          // Consumer<JuzViewModal>(
+                          //   builder: (context,value,_) {
+                          //     return ListView.separated(
+                          //       shrinkWrap: true,
+                          //       itemCount:value.allJuz.length,
+                          //       itemBuilder: (context, index) {
+                          //         final JuzModal juzModal=value.allJuz[index];
+                          //         return ListTile(
+                          //             leading: Image.asset(
+                          //               "assets/counting.png",
+                          //             ),
+                          //             title: Text(' Al-Fatih'
+                          //             ,
+                          //             style: TextStyle(
+                          //             color: Color(0xff240F4F), fontSize: 20),
+                          //         ),
+                          //         subtitle: Text(
+                          //         " ${juzModal.data?.number} MECCAN \t \tألْفَاتِحَة 7 VERSES",
+                          //         style: TextStyle(
+                          //         color: Color(0xff8789A3), fontSize: 12),
+                          //         ),
+                          //         trailing: Text(
+                          //         " ألْفَاتِحَة",
+                          //         style: TextStyle(
+                          //         color: Color(0xff863ED5), fontSize: 20)
+                          //         ,
+                          //         )
+                          //         ,
+                          //         );
+                          //       },
+                          //       separatorBuilder:
+                          //           (BuildContext context, int index) {
+                          //         return const Divider(
+                          //           thickness: 1,
+                          //           indent: 10,
+                          //           endIndent: 10,
+                          //           color: Colors.teal,
+                          //         );
+                          //       },
+                          //     );
+                          //   }
+                          // ),
+                          // Text("Sojsdfalf"),
+                          ParaWidget(),
                           ListView.separated(
                             shrinkWrap: true,
                             itemCount: 4,
@@ -367,9 +407,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-              );
-          }
-        }),
+              )
+        
       ),
       bottomNavigationBar: BottomNavigationBar(
         //iconSize: 40,
