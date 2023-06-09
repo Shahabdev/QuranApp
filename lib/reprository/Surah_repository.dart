@@ -12,7 +12,7 @@ class SurahRepository {
     try {
       dynamic response = await _apiServices.getApiResponse(AppUrl.surahendpoint);
 
-      print('shahab${response}');
+      //print('shahab${response}');
 
 
       return response= SurahNameModal.fromJson(response);

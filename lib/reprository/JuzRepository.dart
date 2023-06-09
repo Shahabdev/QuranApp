@@ -14,7 +14,7 @@ class JuzRepository {
     try
         {
           dynamic response =await _apiServices.getApiResponse(AppUrl.juzEndPoint(paraNum));
-          print('shahab${response}');
+         // print('shahab${response}');
           return response=JuzModal.fromJson(response);
         }
         catch(e)
